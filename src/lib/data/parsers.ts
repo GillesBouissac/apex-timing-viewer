@@ -35,9 +35,35 @@ export function parsePitLine(line: string) {
 
 export function parseInfLine(line: string) {
 	const infMatch = line.match(/^D\d+\.INF#(.*)$/);
-	return infMatch
-		? { type: 'INF', xml: infMatch[1] }
-		: { type: 'INF', raw: line };
+	if (!infMatch) return { type: 'INF', raw: line };
+	const xml = infMatch[1];
+	let teamId: string | undefined;
+	let teamName: string | undefined;
+	let category: string | undefined;
+	let pilots: { id: string; name: string }[] = [];
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(xml, 'application/xml');
+	const teamNode = doc.querySelector('driver[id]');
+	if (teamNode) {
+		teamId = teamNode.getAttribute('id') || undefined;
+		teamName = teamNode.getAttribute('name') || undefined;
+	}
+	const catNode = doc.querySelector('inf[type="class"]');
+	if (catNode) {
+		category = catNode.getAttribute('value') || undefined;
+	}
+	pilots = Array.from(doc.querySelectorAll('driver[id]')).map(node => ({
+		id: node.getAttribute('id') || '',
+		name: node.getAttribute('name') || ''
+	}));
+	return {
+		type: 'INF',
+		xml,
+		teamId,
+		teamName,
+		category,
+		pilots
+	};
 }
 
 export async function readLapsFile(filename: string) {
