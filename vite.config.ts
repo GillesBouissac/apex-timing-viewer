@@ -1,7 +1,10 @@
+
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	// Remplacez 'apex-timing-viewer' par le nom de votre repo si besoin
+	base: '/apex-timing-viewer/',
 	plugins: [sveltekit()],
 	test: {
 		expect: { requireAssertions: true },
