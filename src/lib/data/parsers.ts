@@ -5,28 +5,29 @@
  * @returns Tableau d'objets { id, value }
  */
 export function parseLapLine(line: string) {
-	const lMatch = line.match(/^D\d+\.L(\d+)#\|\|\|(.*)$/);
+	const lMatch = line.match(/^D(\d+)\.L(\d+)#\|\|\|(.*)$/);
 	return lMatch
-		? { type: 'L', id: lMatch[1], value: lMatch[2] }
+		? { type: 'L', teamId: lMatch[1], id: lMatch[2], value: lMatch[3] }
 		: { type: 'L', raw: line };
 }
 
 export function parsePitLine(line: string) {
 	// Dxxxx.P<pitNum>#<lineNum>|lapNum|raceTimeBefore|raceTimeAfter|pitDuration|driverDuration|nbLapSinceLast|idDriver|totalDriverDuration
-	const pMatch = line.match(/^D\d+\.P(\d+)#(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)$/);
+	const pMatch = line.match(/^D(\d+)\.P(\d+)#(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)$/);
 	if (pMatch) {
 		return {
 			type: 'P',
-			lineNum: pMatch[1],
-			pitNum: pMatch[2],
-			lapNum: pMatch[3],
-			raceTimeBefore: pMatch[4],
-			raceTimeAfter: pMatch[5],
-			pitDuration: pMatch[6],
-			driverDuration: pMatch[7],
-			nbLapSinceLast: pMatch[8],
-			idDriver: pMatch[9],
-			totalDriverDuration: pMatch[10]
+			teamId: pMatch[1],
+			lineNum: pMatch[2],
+			pitNum: pMatch[3],
+			lapNum: pMatch[4],
+			raceTimeBefore: pMatch[5],
+			raceTimeAfter: pMatch[6],
+			pitDuration: pMatch[7],
+			driverDuration: pMatch[8],
+			nbLapSinceLast: pMatch[9],
+			idDriver: pMatch[10],
+			totalDriverDuration: pMatch[11]
 		};
 	} else {
 		return { type: 'P', raw: line };
@@ -34,10 +35,10 @@ export function parsePitLine(line: string) {
 }
 
 export function parseInfLine(line: string) {
-	const infMatch = line.match(/^D\d+\.INF#(.*)$/);
+	const infMatch = line.match(/^D(\d+)\.INF#(.*)$/);
 	if (!infMatch) return { type: 'INF', raw: line };
-	const xml = infMatch[1];
-	let teamId: string | undefined;
+	const teamId = infMatch[1];
+	const xml = infMatch[2];
 	let teamName: string | undefined;
 	let category: string | undefined;
 	let pilots: { id: string; name: string }[] = [];
@@ -45,7 +46,6 @@ export function parseInfLine(line: string) {
 	const doc = parser.parseFromString(xml, 'application/xml');
 	const teamNode = doc.querySelector('driver[id]');
 	if (teamNode) {
-		teamId = teamNode.getAttribute('id') || undefined;
 		teamName = teamNode.getAttribute('name') || undefined;
 	}
 	const catNode = doc.querySelector('inf[type="class"]');
