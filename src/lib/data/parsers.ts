@@ -88,7 +88,7 @@ export function parseInfLine(line: string) {
 }
 
 export async function readLapsFile(filename: string) {
-	const response = await fetch(`/data/laps/${filename}`);
+	const response = await fetch(`./data/laps/${filename}`);
 	if (!response.ok) throw new Error('Fichier non trouvé');
 	const text = await response.text();
 

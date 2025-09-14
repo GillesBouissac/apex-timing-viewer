@@ -15,7 +15,7 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
 		"predeploy": "npm run build",
-		"deploy": "gh-pages -d build"
+		"deploy": "gh-pages -t -d build --nojekyll"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
