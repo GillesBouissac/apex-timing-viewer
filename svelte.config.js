@@ -5,12 +5,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter({
-			// Le dossier 'build' sera généré pour le déploiement
-			pages: 'build',
-			assets: 'build',
-			fallback: null
-		}),
+		adapter: adapter(),
 		paths: {
 			base: '/apex-timing-viewer'
 		}
