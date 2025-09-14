@@ -5,9 +5,17 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({
+			// default options are shown. On some platforms
+			// these options are set automatically — see below
+			pages: 'build',
+			assets: 'build',
+			fallback: null,
+			precompress: false,
+			strict: true
+		}),
 		paths: {
-			base: '/apex-timing-viewer'
+			base: process.env.NODE_ENV === "production" ? '/apex-timing-viewer' : ""
 		}
 	}
 };
