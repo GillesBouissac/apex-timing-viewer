@@ -4,6 +4,12 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	kit: {
+		adapter: adapter(),
+		paths: {
+			base: '/apex-timing-viewer'
+		}
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
@@ -32,12 +38,6 @@ export default defineConfig({
 				}
 			}
 		]
-	},
-	kit: {
-		adapter: adapter(),
-		paths: {
-			base: '/apex-timing-viewer'
-		}
 	}
 });
 
