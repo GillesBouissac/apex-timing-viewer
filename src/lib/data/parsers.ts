@@ -1,3 +1,7 @@
+import { resolve } from '$app/paths';
+
+const LAP_DIR_PATH = '/data/laps'
+
 /**
  * Lit et parse un fichier .laps depuis le dossier static/data/laps
  * @param filename Nom du fichier (ex: D83181.laps)
@@ -5,6 +9,8 @@
  */
 export function parseLapLine(line: string) {
     const lMatch = line.match(/^D(\d+)\.L(\d+)#\|\|\|([bgp]?)(\d+)$/i);
+    console.log(`(${line})`);
+    console.log(lMatch);
     if (lMatch) {
         const teamId = lMatch[1];
         const lapNum = lMatch[2];
@@ -88,7 +94,8 @@ export function parseInfLine(line: string) {
 }
 
 export async function readLapsFile(filename: string) {
-	const response = await fetch(`./data/laps/${filename}`);
+	const url = resolve(`${LAP_DIR_PATH}/${filename}`);
+	const response = await fetch(url);
 	if (!response.ok) throw new Error('Fichier non trouvé');
 	const text = await response.text();
 

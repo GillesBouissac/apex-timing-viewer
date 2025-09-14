@@ -1,3 +1,8 @@
+import { resolve } from '$app/paths';
+
+const LAP_DIR_PATH = '/data/laps'
+const LAPS_FILE_PATH = `${LAP_DIR_PATH}/laps_files.json`
+
 /**
  * Lit tous les fichiers .laps listés dans laps_files.json,
  * parse chaque ligne et indexe les données par type et par équipe.
@@ -79,7 +84,7 @@ export type LapsDataIndex = {
  * Parse le fichier laps_files.json et retourne la liste des fichiers .laps
  */
 export async function getLapsFilesList(): Promise<string[]> {
-  const response = await fetch('./data/laps/laps_files.json');
+  const response = await fetch(resolve(LAPS_FILE_PATH));
   if (!response.ok) throw new Error('Fichier laps_files.json non trouvé');
   return await response.json();
 }

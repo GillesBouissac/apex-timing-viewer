@@ -28,6 +28,7 @@
         lapType: line.lapType
       }))
       .sort((a, b) => Number(a.lapNum) - Number(b.lapNum)); // Tri croissant sur lapNum
+      console.log(filename, laps);
   }
 
   onMount(fetchTeams);
