@@ -1,69 +1,90 @@
-
 /**
  * Lit et parse un fichier .laps depuis le dossier static/data/laps
  * @param filename Nom du fichier (ex: D83181.laps)
  * @returns Tableau d'objets { id, value }
  */
 export function parseLapLine(line: string) {
-	const lMatch = line.match(/^D(\d+)\.L(\d+)#\|\|\|(.*)$/);
-	return lMatch
-		? { type: 'L', teamId: lMatch[1], id: lMatch[2], value: lMatch[3] }
-		: { type: 'L', raw: line };
+    const lMatch = line.match(/^D(\d+)\.L(\d+)#\|\|\|([bgp]?)(\d+)$/i);
+    if (lMatch) {
+        const teamId = lMatch[1];
+        const lapNum = lMatch[2];
+        const lapType = lMatch[3] || undefined;
+        const lapTime = lMatch[4];
+        const flags = {
+            pitStop: lapType === 'b',
+            bestTeamLap: lapType === 'g',
+            bestGlobalLap: lapType === 'p'
+        };
+        return {
+            type: 'L',
+            teamId,
+            lapNum,
+            lapType,
+            lapTime,
+            flags
+        };
+    }
+    return { type: 'L', raw: line };
 }
 
+/**
+ * Parse une ligne .P du fichier .laps
+ * @param line Ligne du fichier
+ * @returns Objet structuré ou raw si non conforme
+ */
 export function parsePitLine(line: string) {
-	// Dxxxx.P<pitNum>#<lineNum>|lapNum|raceTimeBefore|raceTimeAfter|pitDuration|driverDuration|nbLapSinceLast|idDriver|totalDriverDuration
-	const pMatch = line.match(/^D(\d+)\.P(\d+)#(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)$/);
-	if (pMatch) {
-		return {
-			type: 'P',
-			teamId: pMatch[1],
-			lineNum: pMatch[2],
-			pitNum: pMatch[3],
-			lapNum: pMatch[4],
-			raceTimeBefore: pMatch[5],
-			raceTimeAfter: pMatch[6],
-			pitDuration: pMatch[7],
-			driverDuration: pMatch[8],
-			nbLapSinceLast: pMatch[9],
-			idDriver: pMatch[10],
-			totalDriverDuration: pMatch[11]
-		};
-	} else {
-		return { type: 'P', raw: line };
-	}
+    const pMatch = line.match(
+        /^D(\d+)\.P(\d+)#(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)\|(\d+)$/
+    );
+    if (pMatch) {
+        return {
+            type: 'P',
+            teamId: pMatch[1],
+            lineNum: pMatch[2],
+            pitNum: pMatch[3],
+            lapNum: pMatch[4],
+            raceTimeBefore: pMatch[5],
+            raceTimeAfter: pMatch[6],
+            pitDuration: pMatch[7],
+            driverDuration: pMatch[8],
+            nbLapSinceLast: pMatch[9],
+            idDriver: pMatch[10],
+            totalDriverDuration: pMatch[11]
+        };
+    }
+    return { type: 'P', raw: line };
 }
 
+/**
+ * Parse une ligne .INF du fichier .laps
+ * @param line Ligne du fichier
+ * @returns Objet structuré ou raw si non conforme
+ */
 export function parseInfLine(line: string) {
-	const infMatch = line.match(/^D(\d+)\.INF#(.*)$/);
-	if (!infMatch) return { type: 'INF', raw: line };
-	const teamId = infMatch[1];
-	const xml = infMatch[2];
-	let teamName: string | undefined;
-	let category: string | undefined;
-	let pilots: { id: string; name: string }[] = [];
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(xml, 'application/xml');
-	const teamNode = doc.querySelector('driver[id]');
-	if (teamNode) {
-		teamName = teamNode.getAttribute('name') || undefined;
-	}
-	const catNode = doc.querySelector('inf[type="class"]');
-	if (catNode) {
-		category = catNode.getAttribute('value') || undefined;
-	}
-	pilots = Array.from(doc.querySelectorAll('driver[id]')).map(node => ({
-		id: node.getAttribute('id') || '',
-		name: node.getAttribute('name') || ''
-	}));
-	return {
-		type: 'INF',
-		xml,
-		teamId,
-		teamName,
-		category,
-		pilots
-	};
+    const infMatch = line.match(/^D(\d+)\.INF#(.*)$/s);
+    if (!infMatch) return { type: 'INF', raw: line };
+    const teamId = infMatch[1];
+    const xml = infMatch[2].trim();
+    try {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xml, 'application/xml');
+        const driverNode = doc.querySelector('driver');
+        const teamName = driverNode?.getAttribute('name') ?? '';
+        const category = driverNode?.querySelector('inf')?.getAttribute('value') ?? '';
+        const pilots = Array.from(driverNode?.querySelectorAll(':scope > driver') ?? []).map(pilot => ({
+            id: pilot.getAttribute('id') ?? '',
+            name: pilot.getAttribute('name') ?? ''
+        }));
+        return {
+            type: 'INF',
+            teamId,
+            teamName,
+            category,
+            pilots
+        };
+    } catch {
+        return { type: 'INF', teamId, raw: xml };
+    }
 }
 
 export async function readLapsFile(filename: string) {

@@ -12,7 +12,7 @@ describe('parsers', () => {
       if (url.endsWith('test.laps')) {
         text = [
           'D12345.L100#|||55555',
-          'D12345.P1#1|100|200|300|400',
+          'D12345.P1#1|100|200|300|400|500|600|700|800|900',
           'D12345.INF#<driver id="12345" name="TEST"/>',
           'D12345.UNKNOWN#something',
         ].join('\n');
@@ -24,57 +24,101 @@ describe('parsers', () => {
     };
   });
 
-  it('parseLapLine .L', () => {
-    expect(parseLapLine('D12345.L100#|||55555')).toEqual({ type: 'L', id: '100', value: '55555' });
-  });
-
-  it('parsePitLine .P', () => {
-    expect(parsePitLine('D83223.P34#34|1117|86516941|2076767|29|83813|12731449|1|123456')).toEqual({
-      type: 'P',
-      lineNum: '34',
-      pitNum: '34',
-      lapNum: '1117',
-      raceTimeBefore: '86516941',
-      raceTimeAfter: '2076767',
-      pitDuration: '29',
-      driverDuration: '83813',
-      nbLapSinceLast: '12731449',
-      idDriver: '1',
-      totalDriverDuration: '123456'
+  describe('parseLapLine', () => {
+    it('parse un tour normal', () => {
+        const line = 'D83223.L1095#|||74298';
+        expect(parseLapLine(line)).toEqual({
+            type: 'L',
+            teamId: '83223',
+            lapNum: '1095',
+            lapType: undefined,
+            lapTime: '74298',
+            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: false }
+        });
+    });
+    it('parse un tour avec pit stop', () => {
+        const line = 'D83223.L1089#|||b87593';
+        expect(parseLapLine(line)).toEqual({
+            type: 'L',
+            teamId: '83223',
+            lapNum: '1089',
+            lapType: 'b',
+            lapTime: '87593',
+            flags: { pitStop: true, bestTeamLap: false, bestGlobalLap: false }
+        });
+    });
+    it('parse un meilleur tour équipe', () => {
+        const line = 'D83223.L1088#|||g74649';
+        expect(parseLapLine(line)).toEqual({
+            type: 'L',
+            teamId: '83223',
+            lapNum: '1088',
+            lapType: 'g',
+            lapTime: '74649',
+            flags: { pitStop: false, bestTeamLap: true, bestGlobalLap: false }
+        });
+    });
+    it('parse un meilleur tour global', () => {
+        const line = 'D83223.L1087#|||p74000';
+        expect(parseLapLine(line)).toEqual({
+            type: 'L',
+            teamId: '83223',
+            lapNum: '1087',
+            lapType: 'p',
+            lapTime: '74000',
+            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: true }
+        });
     });
   });
 
-  it('parseInfLine .INF', () => {
-    const xml = '<driver  id="83181" member="0" center="70" num="1" name="SCARMOR" nat="" color="#1ADB23">'
-      + '<inf type="class" title="Catégorie" value="ROOKIE"/>'
-      + '<driver  id="83525" member="0" num="1" name="FLORENT" nat="" color="#000000"/>'
-      + '<driver  id="83526" member="0" num="2" name="FLORIAN" nat="" color="#000000"/>'
-      + '<driver  id="83527" member="0" num="3" name="PIERRE" nat="" color="#000000"/>'
-      + '<driver  id="83528" member="0" num="4" name="CLEMENT" nat="" color="#000000"/>'
-      + '<driver  id="83529" member="0" num="5" name="THOMAS" nat="" color="#000000"/>'
-      + '<driver  id="83530" member="0" num="6" name="YANN" nat="" color="#000000"/>'
-      + '<driver  id="83531" member="0" num="7" name="ARNAUD" nat="" color="#000000" current="1"/>'
-      + '<driver  id="83532" member="0" num="8" name="ALEXANDRE" nat="" color="#000000"/>'
-      + '<driver  id="83533" member="0" num="9" name="ERLE" nat="" color="#000000"/>'
-      + '</driver>';
-    const result = parseInfLine(`D83181.INF#${xml}`);
-    expect(result.type).toBe('INF');
-    expect(result.xml).toBe(xml);
-    expect(result.teamId).toBe('83181');
-    expect(result.teamName).toBe('SCARMOR');
-    expect(result.category).toBe('ROOKIE');
-    expect(result.pilots).toEqual([
-      { id: '83181', name: 'SCARMOR' },
-      { id: '83525', name: 'FLORENT' },
-      { id: '83526', name: 'FLORIAN' },
-      { id: '83527', name: 'PIERRE' },
-      { id: '83528', name: 'CLEMENT' },
-      { id: '83529', name: 'THOMAS' },
-      { id: '83530', name: 'YANN' },
-      { id: '83531', name: 'ARNAUD' },
-      { id: '83532', name: 'ALEXANDRE' },
-      { id: '83533', name: 'ERLE' }
-    ]);
+  describe('parsePitLine', () => {
+    it('parse une ligne pit stop', () => {
+        const line = 'D83223.P02#2|71|5385563|5477940|92377|2655404|36|83813|2655404';
+        expect(parsePitLine(line)).toEqual({
+            type: 'P',
+            teamId: '83223',
+            lineNum: '02',
+            pitNum: '2',
+            lapNum: '71',
+            raceTimeBefore: '5385563',
+            raceTimeAfter: '5477940',
+            pitDuration: '92377',
+            driverDuration: '2655404',
+            nbLapSinceLast: '36',
+            idDriver: '83813',
+            totalDriverDuration: '2655404'
+        });
+    });
+  });
+
+  describe('parseInfLine', () => {
+    it('parse une ligne INF', () => {
+        const line = `D83223.INF#<driver  id="83223" member="0" center="70" num="561" name="INTERMARCHE TEAM RTB56" nat="" color="#0000FF">
+    <inf type="class" title="Catégorie" value="AM"/>
+    <driver  id="83813" member="0" num="1" name="DANIEL" nat="" color="#000000" current="1"/>
+    <driver  id="83814" member="0" num="2" name="PHILIPPE" nat="" color="#000000"/>
+    <driver  id="83815" member="0" num="3" name="GILLES" nat="" color="#000000"/>
+    <driver  id="83816" member="0" num="4" name="CEDRIC" nat="" color="#000000"/>
+    <driver  id="83817" member="0" num="5" name="OLIVIER" nat="" color="#000000"/>
+    <driver  id="83818" member="0" num="6" name="THOMAS" nat="" color="#000000"/>
+    <driver  id="83819" member="0" num="7" name="DENIS" nat="" color="#000000"/>
+</driver>`;
+        expect(parseInfLine(line)).toEqual({
+            type: 'INF',
+            teamId: '83223',
+            teamName: 'INTERMARCHE TEAM RTB56',
+            category: 'AM',
+            pilots: [
+                { id: '83813', name: 'DANIEL' },
+                { id: '83814', name: 'PHILIPPE' },
+                { id: '83815', name: 'GILLES' },
+                { id: '83816', name: 'CEDRIC' },
+                { id: '83817', name: 'OLIVIER' },
+                { id: '83818', name: 'THOMAS' },
+                { id: '83819', name: 'DENIS' }
+            ]
+        });
+    });
   });
 
   it('readLapsFile unknown', async () => {
