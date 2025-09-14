@@ -1,0 +1,1 @@
+# Prevents gh-pages to build with jekyll, we need to build with sveltekit
