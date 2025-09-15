@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import LapChart from '$lib/charts/LapChart.svelte';
   import { readLapsFile } from '$lib/data/parsers';
+	import { getLapsFilesList } from '$lib/data/laps_files';
 
   let laps: { lapNum: string, lapTime: string, lapType?: string }[] = [];
   let teamFiles: string[] = [];
@@ -9,8 +10,7 @@
 
   // Récupère la liste des fichiers d'équipes
   async function fetchTeams() {
-    const res = await fetch('/data/laps/laps_files.json');
-    teamFiles = await res.json();
+    teamFiles = await getLapsFilesList();
     if (teamFiles.length > 0) {
       await fetchLaps(teamFiles[0]);
     }

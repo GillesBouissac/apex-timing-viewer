@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { getLapsFilesList } from '$lib/data/laps_files';
   import { onMount } from 'svelte';
   let files: string[] = [];
   let selected: string = '';
 
   onMount(async () => {
-    const res = await fetch('/data/laps/laps_files.json');
-    files = await res.json();
+    files = await getLapsFilesList();
   });
 
   function selectFile(file: string) {
