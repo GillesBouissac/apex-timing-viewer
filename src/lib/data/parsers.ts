@@ -1,6 +1,6 @@
 import { resolve } from '$app/paths';
 
-const LAP_DIR_PATH = '/apex-timing-viewer/data/laps'
+const LAP_DIR_PATH = './data/laps'
 
 /**
  * Lit et parse un fichier .laps depuis le dossier static/data/laps

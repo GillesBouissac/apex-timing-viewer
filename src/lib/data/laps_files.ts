@@ -1,6 +1,6 @@
 import { resolve } from '$app/paths';
 
-const LAP_DIR_PATH = '/apex-timing-viewer/data/laps'
+const LAP_DIR_PATH = './data/laps'
 const LAPS_FILE_PATH = `${LAP_DIR_PATH}/laps_files.json`
 
 /**
