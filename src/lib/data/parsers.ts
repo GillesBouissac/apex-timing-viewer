@@ -1,6 +1,6 @@
 import { resolve } from '$app/paths';
 
-const LAP_DIR_PATH = '/data/laps'
+const LAP_DIR_PATH = '/apex-timing-viewer/data/laps'
 
 /**
  * Lit et parse un fichier .laps depuis le dossier static/data/laps
@@ -94,7 +94,7 @@ export function parseInfLine(line: string) {
 }
 
 export async function readLapsFile(filename: string) {
-	const url = resolve(`${LAP_DIR_PATH}/${filename}`);
+	const url = `${LAP_DIR_PATH}/${filename}`;
 	const response = await fetch(url);
 	if (!response.ok) throw new Error('Fichier non trouvé');
 	const text = await response.text();

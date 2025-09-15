@@ -1,6 +1,6 @@
 import { resolve } from '$app/paths';
 
-const LAP_DIR_PATH = '/data/laps'
+const LAP_DIR_PATH = '/apex-timing-viewer/data/laps'
 const LAPS_FILE_PATH = `${LAP_DIR_PATH}/laps_files.json`
 
 /**
@@ -84,7 +84,7 @@ export type LapsDataIndex = {
  * Parse le fichier laps_files.json et retourne la liste des fichiers .laps
  */
 export async function getLapsFilesList(): Promise<string[]> {
-  const response = await fetch(resolve(LAPS_FILE_PATH));
+  const response = await fetch(LAPS_FILE_PATH);
   if (!response.ok) throw new Error('Fichier laps_files.json non trouvé');
   return await response.json();
 }
