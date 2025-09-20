@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { resolve } from '$app/paths';
 </script>
 
 <nav class="block bg-white border-gray-200 dark:bg-gray-900">
@@ -13,7 +14,7 @@
 
 			<li class="text-gray-900">
 				<div class="nav-card">
-					<a href="/timeline" class="nav-link" class:disabled={page.url.pathname.toString() === '/timeline'}>
+					<a href={resolve('/timeline')} class="nav-link" class:disabled={page.url.pathname.toString() === resolve('/timeline')}>
 						Timeline
 					</a>
 				</div>
@@ -21,7 +22,7 @@
 
 			<li class="text-gray-900">
 				<div class="nav-card">
-					<a href="/selector" class="nav-link" class:disabled={page.url.pathname.toString() === '/selector'}>
+					<a href={resolve('/selector')} class="nav-link" class:disabled={page.url.pathname.toString() === resolve('/selector')}>
 						Race
 					</a>
 				</div>

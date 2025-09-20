@@ -1,4 +1,6 @@
 <script>
 	import { goto } from '$app/navigation';
-	goto('/timeline');
+	import { resolve } from '$app/paths';
+
+	goto(resolve('/timeline'));
 </script>
