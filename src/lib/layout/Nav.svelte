@@ -1,12 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+
+	console.log(`From Nav: / => ${resolve('/')}`);
+	console.log(`From Nav: /timeline => ${resolve('/timeline')}`);
+	console.log(`From Nav: /selector => ${resolve('/selector')}`);
+
 </script>
 
 <nav class="block bg-white border-gray-200 dark:bg-gray-900">
 	<div class="flex justify-between mx-auto pl-4 pr-4 pt-2 pb-2">
 		<div class="nav-card">
-			<a href="/">
+			<a href={resolve('/')}>
 				Race analyser
 			</a>
 		</div>
