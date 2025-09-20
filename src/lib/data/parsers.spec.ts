@@ -30,6 +30,23 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
+            inter1: '',
+            inter2: '',
+            inter3: '',
+            lapNum: '1095',
+            lapType: undefined,
+            lapTime: '74298',
+            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: false }
+        });
+    });
+    it('parse un tour avec temps intermédiaires', () => {
+        const line = 'D83223.L1095#1251|2565|5481|74298';
+        expect(parseLapLine(line)).toEqual({
+            type: 'L',
+            teamId: '83223',
+            inter1: '1251',
+            inter2: '2565',
+            inter3: '5481',
             lapNum: '1095',
             lapType: undefined,
             lapTime: '74298',
@@ -41,6 +58,9 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
+            inter1: '',
+            inter2: '',
+            inter3: '',
             lapNum: '1089',
             lapType: 'b',
             lapTime: '87593',
@@ -52,6 +72,9 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
+            inter1: '',
+            inter2: '',
+            inter3: '',
             lapNum: '1088',
             lapType: 'g',
             lapTime: '74649',
@@ -63,6 +86,9 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
+            inter1: '',
+            inter2: '',
+            inter3: '',
             lapNum: '1087',
             lapType: 'p',
             lapTime: '74000',

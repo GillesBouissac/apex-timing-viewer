@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+div .page-card {
+
+    background-color: var(--color-white) /* #fff = #ffffff */;
+
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: var(--color-gray-200) /* oklch(92.8% 0.006 264.531) = #e5e7eb */;
+    border-radius: var(--radius-lg) /* 0.5rem = 8px */;
+
+    padding: calc(var(--spacing) * 4) /* 1rem = 16px */;
+
+    --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+
+}
+
+div .nav-card {
+
+    background-color: var(--color-white) /* #fff = #ffffff */;
+    border-width: 0px;
+
+    padding-right: calc(var(--spacing) * 2) /* 1rem = 16px */;
+    padding-left: calc(var(--spacing) * 2) /* 1rem = 16px */;
+    padding-top: calc(var(--spacing) * 1) /* 1rem = 16px */;
+    padding-bottom: calc(var(--spacing) * 1) /* 1rem = 16px */;
+
+}

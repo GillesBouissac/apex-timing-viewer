@@ -1,5 +1,3 @@
-import { resolve } from '$app/paths';
-
 const LAP_DIR_PATH = './data/laps'
 
 /**
@@ -8,14 +6,17 @@ const LAP_DIR_PATH = './data/laps'
  * @returns Tableau d'objets { id, value }
  */
 export function parseLapLine(line: string) {
-    const lMatch = line.match(/^D(\d+)\.L(\d+)#\|\|\|([bgp]?)(\d+)$/i);
+    const lMatch = line.match(/^D(\d+)\.L(\d+)#(\d*)\|(\d*)\|(\d*)\|([bgp]?)(\d+)$/i);
     console.log(`(${line})`);
     console.log(lMatch);
     if (lMatch) {
         const teamId = lMatch[1];
         const lapNum = lMatch[2];
-        const lapType = lMatch[3] || undefined;
-        const lapTime = lMatch[4];
+        const inter1 = lMatch[3];
+        const inter2 = lMatch[4];
+        const inter3 = lMatch[5];
+        const lapType = lMatch[6] || undefined;
+        const lapTime = lMatch[7];
         const flags = {
             pitStop: lapType === 'b',
             bestTeamLap: lapType === 'g',
@@ -26,6 +27,9 @@ export function parseLapLine(line: string) {
             teamId,
             lapNum,
             lapType,
+            inter1,
+            inter2,
+            inter3,
             lapTime,
             flags
         };
