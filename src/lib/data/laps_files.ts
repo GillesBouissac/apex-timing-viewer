@@ -1,3 +1,5 @@
+// import { readLapsFile } from './parsers';
+
 const LAP_DIR_PATH = './data/laps'
 const LAPS_FILE_PATH = `${LAP_DIR_PATH}/laps_files.json`
 
@@ -6,6 +8,7 @@ const LAPS_FILE_PATH = `${LAP_DIR_PATH}/laps_files.json`
  * parse chaque ligne et indexe les données par type et par équipe.
  * Retourne une structure : { [teamId]: { L: [], P: [], INF: {} } }
  */
+/*
 export async function getAllLapsDataIndexed(): Promise<LapsDataIndex> {
   const files = await getLapsFilesList();
   const index: LapsDataIndex = {};
@@ -36,7 +39,6 @@ export async function getAllLapsDataIndexed(): Promise<LapsDataIndex> {
   }
   return index;
 }
-import { readLapsFile } from './parsers';
 
 export type LapLine = {
   type: 'L';
@@ -77,6 +79,7 @@ export type LapsDataIndex = {
     INF?: InfLine;
   };
 };
+*/
 
 /**
  * Parse le fichier laps_files.json et retourne la liste des fichiers .laps

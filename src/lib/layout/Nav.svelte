@@ -1,11 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
-
-	console.log(`From Nav: / => ${resolve('/')}`);
-	console.log(`From Nav: /timeline => ${resolve('/timeline')}`);
-	console.log(`From Nav: /selector => ${resolve('/selector')}`);
-
 </script>
 
 <nav class="block bg-white border-gray-200 dark:bg-gray-900">
