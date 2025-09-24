@@ -2,7 +2,7 @@ export function tooltip(element: Element) {
 	let div: HTMLDivElement;
 	let title: string|null;
 
-	function mouseOver(event: MouseEvent) {
+	function mouseOver(event: MouseEventInit) {
 		const parser = new DOMParser();
 
 		// NOTE: remove the `title` attribute, to prevent showing the default browser tooltip
@@ -21,21 +21,22 @@ export function tooltip(element: Element) {
 			border-radius: 4px;
 			padding: 4px;
 			position: absolute;
-			top: ${event.pageX + 5}px;
-			left: ${event.pageY + 5}px;
+			top:  ${event.clientX ? event.clientX + 5 : 5}px;
+			left: ${event.clientY ? event.clientY + 5 : 5}px;
 		`;
 		document.body.appendChild(div);
 	}
 
-	function mouseMove(event: MouseEvent): void {
-		div.style.left = `${event.pageX + 5}px`;
-		div.style.top = `${event.pageY + 5}px`;
+	// function mouseMove(event: MouseEvent) 
+	const mouseMove = (event: MouseEventInit) => {
+		div.style.top  = `${event.clientY ? event.clientY + 5 : 5}px`;
+		div.style.left = `${event.clientX ? event.clientX + 5 : 5}px`;
 	}
 
 	function mouseLeave() {
 		document.body.removeChild(div);
 		// NOTE: restore the `title` attribute
-		element.setAttribute('title', title);
+		if (title) element.setAttribute('title', title);
 	}
 
 	element.addEventListener('mouseover', mouseOver);

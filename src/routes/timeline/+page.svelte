@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { readLapsFile, type LapData } from '$lib/data/parsers';
-  	import { getLapsFilesList } from '$lib/data/laps_files';
-  	import LapTimeline from '$lib/charts/LapTimeline.svelte';
+    import { getLapsFilesList } from '$lib/data/laps_files';
+    import LapTimeline from '$lib/charts/LapTimeline.svelte';
 
     let laps: LapData[] = [];
     let teamFiles: string[] = [];
@@ -21,7 +21,7 @@
     async function fetchLaps(filename: string) {
       const teamData = await readLapsFile(filename);
       laps = teamData.laps
-       .filter(lap => lap.lapNum!==undefined)
+        .filter(lap => lap.lapNum!==undefined)
 //        console.log(filename, laps);
     }
 
@@ -33,7 +33,7 @@
     <div class="page-card p-4">02</div>
     <div class="col-span-2 page-card p-4">03</div>
     <div class="col-span-2 page-card p-4">04</div>
-    <div class="col-span-6 page-card p-0 h-100">
+    <div class="col-span-6 page-card p-0 h-200">
     {#if loading}
         <div>Chargement...</div>
     {:else}

@@ -16,9 +16,13 @@ describe('parsers', () => {
           'D12345.INF#<driver id="12345" name="TEST"/>',
           'D12345.UNKNOWN#something',
         ].join('\n');
+        return {
+          ok: true,
+          text: async () => text
+        } as Response;
       }
       return {
-        ok: true,
+        ok: false,
         text: async () => text
       } as Response;
     };
@@ -30,13 +34,14 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
-            inter1: '',
-            inter2: '',
-            inter3: '',
-            lapNum: '1095',
-            lapType: undefined,
-            lapTime: '74298',
-            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: false }
+            inter1: 0,
+            inter2: 0,
+            inter3: 0,
+            raceTime: 0,
+            lapNum: 1095,
+            lapType: "l",
+            lapTime: 74298,
+            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: false, normalLap: true, raceStartLap: false }
         });
     });
     it('parse un tour avec temps intermédiaires', () => {
@@ -44,13 +49,14 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
-            inter1: '1251',
-            inter2: '2565',
-            inter3: '5481',
-            lapNum: '1095',
-            lapType: undefined,
-            lapTime: '74298',
-            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: false }
+            inter1: 1251,
+            inter2: 2565,
+            inter3: 5481,
+            raceTime: 0,
+            lapNum: 1095,
+            lapType: 'l',
+            lapTime: 74298,
+            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: false, normalLap: true, raceStartLap: false }
         });
     });
     it('parse un tour avec pit stop', () => {
@@ -58,13 +64,14 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
-            inter1: '',
-            inter2: '',
-            inter3: '',
-            lapNum: '1089',
+            inter1: 0,
+            inter2: 0,
+            inter3: 0,
+            raceTime: 0,
+            lapNum: 1089,
             lapType: 'b',
-            lapTime: '87593',
-            flags: { pitStop: true, bestTeamLap: false, bestGlobalLap: false }
+            lapTime: 87593,
+            flags: { pitStop: true, bestTeamLap: false, bestGlobalLap: false, normalLap: false, raceStartLap: false }
         });
     });
     it('parse un meilleur tour équipe', () => {
@@ -72,13 +79,14 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
-            inter1: '',
-            inter2: '',
-            inter3: '',
-            lapNum: '1088',
+            inter1: 0,
+            inter2: 0,
+            inter3: 0,
+            raceTime: 0,
+            lapNum: 1088,
             lapType: 'g',
-            lapTime: '74649',
-            flags: { pitStop: false, bestTeamLap: true, bestGlobalLap: false }
+            lapTime: 74649,
+            flags: { pitStop: false, bestTeamLap: true, bestGlobalLap: false, normalLap: false, raceStartLap: false }
         });
     });
     it('parse un meilleur tour global', () => {
@@ -86,13 +94,14 @@ describe('parsers', () => {
         expect(parseLapLine(line)).toEqual({
             type: 'L',
             teamId: '83223',
-            inter1: '',
-            inter2: '',
-            inter3: '',
-            lapNum: '1087',
+            inter1: 0,
+            inter2: 0,
+            inter3: 0,
+            raceTime: 0,
+            lapNum: 1087,
             lapType: 'p',
-            lapTime: '74000',
-            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: true }
+            lapTime: 74000,
+            flags: { pitStop: false, bestTeamLap: false, bestGlobalLap: true, normalLap: false, raceStartLap: false }
         });
     });
   });
@@ -103,16 +112,16 @@ describe('parsers', () => {
         expect(parsePitLine(line)).toEqual({
             type: 'P',
             teamId: '83223',
-            lineNum: '02',
-            pitNum: '2',
-            lapNum: '71',
-            raceTimeBefore: '5385563',
-            raceTimeAfter: '5477940',
-            pitDuration: '92377',
-            driverDuration: '2655404',
-            nbLapSinceLast: '36',
-            idDriver: '83813',
-            totalDriverDuration: '2655404'
+            lineNum: 2,
+            pitNum: 2,
+            lapNum: 72,
+            raceTimeBefore: 5385563,
+            raceTimeAfter: 5477940,
+            pitDuration: 92377,
+            driverDuration: 2655404,
+            nbLapSinceLast: 36,
+            driverId: '83813',
+            totalDriverDuration: 2655404
         });
     });
   });
@@ -134,21 +143,20 @@ describe('parsers', () => {
             teamId: '83223',
             teamName: 'INTERMARCHE TEAM RTB56',
             category: 'AM',
-            pilots: [
-                { id: '83813', name: 'DANIEL' },
-                { id: '83814', name: 'PHILIPPE' },
-                { id: '83815', name: 'GILLES' },
-                { id: '83816', name: 'CEDRIC' },
-                { id: '83817', name: 'OLIVIER' },
-                { id: '83818', name: 'THOMAS' },
-                { id: '83819', name: 'DENIS' }
-            ]
+            pilots: {
+                '83813': 'DANIEL',
+                '83814': 'PHILIPPE',
+                '83815': 'GILLES',
+                '83816': 'CEDRIC',
+                '83817': 'OLIVIER',
+                '83818': 'THOMAS',
+                '83819': 'DENIS'
+            }
         });
     });
   });
 
   it('readLapsFile unknown', async () => {
-    const result = await readLapsFile('test.laps');
-    expect(result[3]).toEqual({ type: 'UNKNOWN', raw: 'D12345.UNKNOWN#something' });
+    await expect(readLapsFile('unknown.laps')).rejects.toThrow();
   });
 });

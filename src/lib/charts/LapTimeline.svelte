@@ -8,9 +8,9 @@
 	import { GridComponent, TitleComponent, TooltipComponent } from 'echarts/components';
 	import { CanvasRenderer } from 'echarts/renderers';
 
-  use([LineChart, GridComponent, CanvasRenderer, TitleComponent, TooltipComponent])
+	use([LineChart, GridComponent, CanvasRenderer, TitleComponent, TooltipComponent])
 
-  export let laps: LapData[] = [];
+	export let laps: LapData[] = [];
 
 	function msToTime(ms: number): string {
 		const date = new Date(ms);
@@ -22,38 +22,38 @@
 		const raceTimeBefore = msToTime(lap.raceTime);
 		const lapTime = msToTime(lap.lapTime);
 		return `${driver} \
-      <br/>Team Lap Num: ${lap.lapNum} \
-      <br/>Race time: ${raceTimeBefore} \
-      <br/>Lap Duration: ${lapTime}`;
+			<br/>Team Lap Num: ${lap.lapNum} \
+			<br/>Race time: ${raceTimeBefore} \
+			<br/>Lap Duration: ${lapTime}`;
 	}
 
 	const options = {
 		title: {
 			show: false,
-      itemGap: 0
+			itemGap: 0
 		},
 		xAxis: {
-      type: "category",
-      data: laps.map(lap => msToTime(lap.raceTime))
-    },
+			type: "category",
+			data: laps.map(lap => msToTime(lap.raceTime))
+		},
 		yAxis: {
 			type: 'value',
-      min: 'dataMin',
-      max: 'dataMax'
+			min: 'dataMin',
+			max: 'dataMax'
 		},
 		series: [
 			{
 				type: 'line',
-        name: 'Lap time',
+				name: 'Lap time',
 				data: laps.map(lap => lap.lapTime)
 			}
 		],
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "shadow"
-      }
-    }
+		tooltip: {
+			trigger: "axis",
+			axisPointer: {
+				type: "shadow"
+			}
+		}
 	};
 </script>
 
@@ -63,7 +63,7 @@
 
 <style>
 	div {
-    width: 100%;
-		height: 400px;
+		width: 100%;
+		height: 100%;
 	}
 </style>

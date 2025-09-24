@@ -168,7 +168,8 @@ export function parseInfLine(line: string): TeamInfo | null {
 export async function readLapsFile(filename: string): Promise<TeamData> {
 	const url = `${LAP_DIR_PATH}/${filename}`;
 	const response = await fetch(url);
-	if (!response.ok) throw new Error('Fichier non trouvé');
+    console.log(`response: `, filename, response);
+    if (!response?.ok) throw new Error('Fichier non trouvé');
 	const text = await response.text().then ( content => {
         return content
             .split('\n')

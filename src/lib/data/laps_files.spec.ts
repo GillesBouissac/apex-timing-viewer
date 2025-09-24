@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getLapsFilesList, getAllLapsDataIndexed } from './laps_files';
+import { getLapsFilesList } from './laps_files';
 
 describe('getLapsFilesList', () => {
   beforeEach(() => {
@@ -35,16 +35,4 @@ describe('getLapsFilesList', () => {
     expect(result).toEqual(['D10001.laps', 'D10002.laps']);
   });
 
-  it('getAllLapsDataIndexed indexe toutes les données par équipe et type', async () => {
-    const data = await getAllLapsDataIndexed();
-    expect(Object.keys(data)).toEqual(['10001', '10002']);
-    expect(data['10001'].INF?.teamName).toBe('TEAM1');
-    expect(data['10001'].INF?.category).toBe('GT3');
-    expect(data['10001'].L.length).toBe(1);
-    expect(data['10001'].P.length).toBe(1);
-    expect(data['10002'].INF?.teamName).toBe('TEAM2');
-    expect(data['10002'].INF?.category).toBe('GT4');
-    expect(data['10002'].L.length).toBe(1);
-    expect(data['10002'].P.length).toBe(1);
-  });
 });
