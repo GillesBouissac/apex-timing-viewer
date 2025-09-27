@@ -21,8 +21,8 @@
     async function fetchLaps(filename: string) {
       const teamData = await readLapsFile(filename);
       laps = teamData.laps
-        .filter(lap => lap.lapNum!==undefined)
-//        console.log(filename, laps);
+        .filter(lap => lap.lapNum!==undefined && lap.value>0)
+        // console.log(filename, laps);
     }
 
     onMount(fetchTeams);

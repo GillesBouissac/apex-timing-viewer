@@ -11,7 +11,8 @@ export interface LapData {
     inter2?: number;
     inter3?: number;
     lapTime: number;
-    raceTime: number,
+    raceTime: number;
+    value: number;
     flags: {
         pitStop: boolean;
         bestTeamLap: boolean;
@@ -89,6 +90,7 @@ export function parseLapLine(line: string): LapData | null {
             inter3,
             lapTime,
             raceTime: 0,
+            value: lapTime,
             flags
         };
     }
